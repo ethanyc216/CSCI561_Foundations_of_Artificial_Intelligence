@@ -1,0 +1,2 @@
+# CSCI561_Foundations_of_Artificial_Intelligence
+Fall 2019
