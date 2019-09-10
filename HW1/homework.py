@@ -219,13 +219,13 @@ def compareAnswers(outputFile, answersFile):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', type=str, default='input1.txt',
+    parser.add_argument('--input', type=str, default='input.txt',
                         help='input file name')
 
     parser.add_argument('--output', type=str, default='output.txt',
                         help='output file name')
 
-    parser.add_argument('--answers', type=str, default='output1.txt',
+    parser.add_argument('--answers', type=str, default='output.txt',
                         help='answers file name')
     args = parser.parse_args()
 
