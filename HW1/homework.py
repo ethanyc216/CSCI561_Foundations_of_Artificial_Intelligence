@@ -75,11 +75,29 @@ def getPossibleMoves((x, y)):
     j1, j2 = max(0, y-1), min(y+2, h)
     for j in range(j1, j2):
         for i in range(i1, i2):
-            if (j, i) == (x, y):
+            if (i, j) == (x, y):
                 continue
             if abs(currVal - vals[j][i]) <= maxDiff:
                 validMoves.append((i, j))
     return validMoves
+
+
+def getCostUCS((x1, y1), nextCoord):
+    if (x1-1, y1-1) == nextCoord:
+        return 14
+    elif (x1-1, y1+1) == nextCoord:
+        return 14
+    elif (x1+1, y1-1) == nextCoord:
+        return 14
+    elif (x1+1, y1+1) == nextCoord:
+        return 14
+    else:
+        return 10
+
+
+def getValDiff((x1, y1), (x2, y2)):
+    vals = inputInfo['vals']
+    return abs(vals[y1][x1] - vals[y2][x2])
 
 
 def breadthFirstSearch(targetCoord):
@@ -114,7 +132,79 @@ def breadthFirstSearch(targetCoord):
     return 'FAIL'
 
 
+def uniformCostSearch(targetCoord):
+    closedSet = set()
+    queue = util.PriorityQueue()
+
+    startCoord = inputInfo['startCoord']
+    startNode = Node(startCoord, [startCoord], 0)
+    queue.push(startNode, 0)
+
+    while not queue.isEmpty():
+        currNode = queue.pop()
+        currCoord = currNode.coord
+        currPath = currNode.path
+        closedSet.add(currCoord)
+
+        if goalTest(targetCoord, currCoord):
+            output = ''
+            for x, y in currNode.path:
+                output += '{},{} '.format(x, y)
+            return output[:-1]
+        else:
+            nextCoords = getPossibleMoves(currCoord)
+            for nextCoord in nextCoords:
+                if (nextCoord not in currPath):
+                    if not goalTest(targetCoord, nextCoord):
+                        closedSet.add(nextCoord)
+                    nextPath = currPath[:]
+                    nextPath.append(nextCoord)
+                    nextCost = currNode.cost + getCostUCS(currCoord, nextCoord)
+                    nextNode = Node(nextCoord, nextPath, nextCost)
+                    queue.push(nextNode, nextCost)
+    return 'FAIL'
+
+
+def heuristic(currCoord):
+    return 0
+
+
+def aStarSearch(targetCoord):
+    closedSet = set()
+    queue = util.PriorityQueue()
+
+    startCoord = inputInfo['startCoord']
+    startNode = Node(startCoord, [startCoord], 0)
+    queue.push(startNode, 0)
+
+    while not queue.isEmpty():
+        currNode = queue.pop()
+        currCoord = currNode.coord
+        currPath = currNode.path
+        closedSet.add(currCoord)
+
+        if goalTest(targetCoord, currCoord):
+            output = ''
+            for x, y in currNode.path:
+                output += '{},{} '.format(x, y)
+            return output[:-1]
+        else:
+            nextCoords = getPossibleMoves(currCoord)
+            for nextCoord in nextCoords:
+                if (nextCoord not in currPath):
+                    if not goalTest(targetCoord, nextCoord):
+                        closedSet.add(nextCoord)
+                    nextPath = currPath[:]
+                    nextPath.append(nextCoord)
+                    nextCost = currNode.cost + getCostUCS(currCoord, nextCoord) + getValDiff(currCoord, nextCoord)
+                    nextNode = Node(nextCoord, nextPath, nextCost)
+                    nextHeuristicCost = heuristic(nextCoord)
+                    queue.push(nextNode, nextCost + nextHeuristicCost)
+    return 'FAIL'
+
+
 def compareAnswers(outputFile, answersFile):
+    print 'The startCoord is: {},\nThe targets are {},\nThe maxDiff is {},\n The grid is:\n{}.\n'.format(inputInfo['startCoord'], inputInfo['targetsCoord'], inputInfo['maxDiff'], inputInfo['vals'])
     res = True
     with open(answersFile) as f:
         answers = f.read().splitlines()
@@ -122,20 +212,20 @@ def compareAnswers(outputFile, answersFile):
         outputs = f.read().splitlines()
     for answer, output in zip(answers, outputs):
         if not answer == output:
-            print 'The answer vs output:\n{}\n{}'.fomate(answer, output)
+            print 'The answer vs output:\n{}\n{}'.format(answer, output)
             res = False
     print res
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', type=str, default='input5.txt',
+    parser.add_argument('--input', type=str, default='input1.txt',
                         help='input file name')
 
     parser.add_argument('--output', type=str, default='output.txt',
                         help='output file name')
 
-    parser.add_argument('--answers', type=str, default='output5.txt',
+    parser.add_argument('--answers', type=str, default='output1.txt',
                         help='answers file name')
     args = parser.parse_args()
 
@@ -145,6 +235,16 @@ if __name__ == "__main__":
         for targetCoord in inputInfo['targetsCoord']:
             path = breadthFirstSearch(targetCoord)
             res.append(path)
+    elif inputInfo['alg'] == 'UCS':
+        for targetCoord in inputInfo['targetsCoord']:
+            path = uniformCostSearch(targetCoord)
+            res.append(path)
+    elif inputInfo['alg'] == 'A*':
+        for targetCoord in inputInfo['targetsCoord']:
+            path = aStarSearch(targetCoord)
+            res.append(path)
+    else:
+        res.append('FAIL')
 
     with open(args.output, 'w') as f:
         for path in res:
@@ -152,4 +252,4 @@ if __name__ == "__main__":
         f.close()
 
     # compare answers
-    compareAnswers(args.output, args.answers)
+    #compareAnswers(args.output, args.answers)
