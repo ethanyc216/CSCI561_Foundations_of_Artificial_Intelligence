@@ -101,7 +101,7 @@ def getValDiff((x1, y1), (x2, y2)):
 
 
 def breadthFirstSearch(targetCoord):
-    closedSet = set()
+    explored = set()
     queue = util.Queue()
 
     startCoord = inputInfo['startCoord']
@@ -112,7 +112,7 @@ def breadthFirstSearch(targetCoord):
         currNode = queue.pop()
         currCoord = currNode.coord
         currPath = currNode.path
-        closedSet.add(currCoord)
+        explored.add(currCoord)
 
         if goalTest(targetCoord, currCoord):
             output = ''
@@ -122,8 +122,8 @@ def breadthFirstSearch(targetCoord):
         else:
             nextCoords = getPossibleMoves(currCoord) 
             for nextCoord in nextCoords:
-                if (nextCoord not in closedSet) and (nextCoord not in currPath):
-                    closedSet.add(nextCoord)
+                if (nextCoord not in explored) and (nextCoord not in currPath):
+                    explored.add(nextCoord)
                     nextPath = currPath[:]
                     nextPath.append(nextCoord)
                     nextCost = currNode.cost + 1
@@ -133,7 +133,7 @@ def breadthFirstSearch(targetCoord):
 
 
 def uniformCostSearch(targetCoord):
-    closedSet = set()
+    explored = set()
     queue = util.PriorityQueue()
 
     startCoord = inputInfo['startCoord']
@@ -144,19 +144,20 @@ def uniformCostSearch(targetCoord):
         currNode = queue.pop()
         currCoord = currNode.coord
         currPath = currNode.path
-        closedSet.add(currCoord)
+        explored.add(currCoord)
 
         if goalTest(targetCoord, currCoord):
             output = ''
             for x, y in currNode.path:
                 output += '{},{} '.format(x, y)
             return output[:-1]
+
         else:
             nextCoords = getPossibleMoves(currCoord)
             for nextCoord in nextCoords:
-                if (nextCoord not in currPath):
+                if (nextCoord not in currPath) and (nextCoord not in explored):
                     if not goalTest(targetCoord, nextCoord):
-                        closedSet.add(nextCoord)
+                        explored.add(nextCoord)
                     nextPath = currPath[:]
                     nextPath.append(nextCoord)
                     nextCost = currNode.cost + getCostUCS(currCoord, nextCoord)
@@ -170,7 +171,7 @@ def heuristic(currCoord):
 
 
 def aStarSearch(targetCoord):
-    closedSet = set()
+    explored = set()
     queue = util.PriorityQueue()
 
     startCoord = inputInfo['startCoord']
@@ -181,19 +182,20 @@ def aStarSearch(targetCoord):
         currNode = queue.pop()
         currCoord = currNode.coord
         currPath = currNode.path
-        closedSet.add(currCoord)
+        explored.add(currCoord)
 
         if goalTest(targetCoord, currCoord):
             output = ''
             for x, y in currNode.path:
                 output += '{},{} '.format(x, y)
             return output[:-1]
+
         else:
             nextCoords = getPossibleMoves(currCoord)
             for nextCoord in nextCoords:
-                if (nextCoord not in currPath):
+                if (nextCoord not in currPath) and (nextCoord not in explored):
                     if not goalTest(targetCoord, nextCoord):
-                        closedSet.add(nextCoord)
+                        explored.add(nextCoord)
                     nextPath = currPath[:]
                     nextPath.append(nextCoord)
                     nextCost = currNode.cost + getCostUCS(currCoord, nextCoord) + getValDiff(currCoord, nextCoord)
@@ -247,8 +249,12 @@ if __name__ == "__main__":
         res.append('FAIL')
 
     with open(args.output, 'w') as f:
-        for path in res:
-            f.write(path+'\n')
+        for i in range(inputInfo['numG']):
+            path = res[i]
+            if i == inputInfo['numG'] -1:
+                f.write(path)
+            else:
+                f.write(path+'\n')
         f.close()
 
     # compare answers
