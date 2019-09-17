@@ -12,7 +12,7 @@
 # output: output.txt
 
 import argparse 
-import numpy as np 
+#import numpy as np 
 import util
 
 class Node(object):
@@ -52,10 +52,13 @@ def processInput(fileName):
         x, y = [int(i) for i in line.split()] 
         inputInfo['targetsCoord'].append((x, y))
 
-    vals = []
+    #vals = []
+    #for line in lines[5+numG:]:
+    #    vals += [int(i) for i in line.split()]
+    #inputInfo['vals'] = np.array(vals).reshape(gridHeight, gridWidth)
+    inputInfo['vals'] = []
     for line in lines[5+numG:]:
-        vals += [int(i) for i in line.split()]
-    inputInfo['vals'] = np.array(vals).reshape(gridHeight, gridWidth)
+        inputInfo['vals'].append(list(map(int, filter(None, line.split()))))
 
     return inputInfo
 
