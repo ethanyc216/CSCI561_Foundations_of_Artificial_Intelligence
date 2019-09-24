@@ -14,6 +14,7 @@
 import argparse 
 #import numpy as np 
 import util
+#import time
 
 class Node(object):
     def __init__(self, coord, path, cost):
@@ -169,8 +170,11 @@ def uniformCostSearch(targetCoord):
     return 'FAIL'
 
 
-def heuristic(currCoord):
-    return 0
+def heuristic(currCoord, targetCoord):
+    w = abs(currCoord[0] - targetCoord[0])
+    h = abs(currCoord[1] - targetCoord[1])
+    cost = 14*min(w, h) + 10*abs(w-h)
+    return cost
 
 
 def aStarSearch(targetCoord):
@@ -203,7 +207,7 @@ def aStarSearch(targetCoord):
                     nextPath.append(nextCoord)
                     nextCost = currNode.cost + getCostUCS(currCoord, nextCoord) + getValDiff(currCoord, nextCoord)
                     nextNode = Node(nextCoord, nextPath, nextCost)
-                    nextHeuristicCost = heuristic(nextCoord)
+                    nextHeuristicCost = heuristic(nextCoord, targetCoord)
                     queue.push(nextNode, nextCost + nextHeuristicCost)
     return 'FAIL'
 
@@ -236,6 +240,8 @@ if __name__ == "__main__":
 
     inputInfo = processInput(args.input)
     res = []
+    #start = time.time()
+
     if inputInfo['alg'] == 'BFS':
         for targetCoord in inputInfo['targetsCoord']:
             path = breadthFirstSearch(targetCoord)
@@ -259,6 +265,8 @@ if __name__ == "__main__":
             else:
                 f.write(path+'\n')
         f.close()
+
+    #print time.time() - start
 
     # compare answers
     #compareAnswers(args.output, args.answers)
