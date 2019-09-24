@@ -240,6 +240,7 @@ if __name__ == "__main__":
 
     inputInfo = processInput(args.input)
     res = []
+    
     #start = time.time()
 
     if inputInfo['alg'] == 'BFS':
