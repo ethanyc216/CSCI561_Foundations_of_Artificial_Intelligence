@@ -120,16 +120,16 @@ def breadthFirstSearch(targetCoord):
 
         if goalTest(targetCoord, currCoord):
             output = ''
-            for x, y in currNode.path:
+            for x, y in currPath:
                 output += '{},{} '.format(x, y)
             return output[:-1]
         else:
             nextCoords = getPossibleMoves(currCoord) 
             for nextCoord in nextCoords:
-                if (nextCoord not in explored) and (nextCoord not in currPath):
+                #if (nextCoord not in explored) and (nextCoord not in currPath):
+                if nextCoord not in explored:
                     explored.add(nextCoord)
-                    nextPath = currPath[:]
-                    nextPath.append(nextCoord)
+                    nextPath = currPath + [nextCoord]
                     nextCost = currNode.cost + 1
                     nextNode = Node(nextCoord, nextPath, nextCost)
                     queue.push(nextNode)
@@ -152,18 +152,18 @@ def uniformCostSearch(targetCoord):
 
         if goalTest(targetCoord, currCoord):
             output = ''
-            for x, y in currNode.path:
+            for x, y in currPath:
                 output += '{},{} '.format(x, y)
             return output[:-1]
 
         else:
             nextCoords = getPossibleMoves(currCoord)
             for nextCoord in nextCoords:
-                if (nextCoord not in currPath) and (nextCoord not in explored):
+                #if (nextCoord not in currPath) and (nextCoord not in explored):
+                if nextCoord not in explored:
                     if not goalTest(targetCoord, nextCoord):
                         explored.add(nextCoord)
-                    nextPath = currPath[:]
-                    nextPath.append(nextCoord)
+                    nextPath = currPath + [nextCoord]
                     nextCost = currNode.cost + getCostUCS(currCoord, nextCoord)
                     nextNode = Node(nextCoord, nextPath, nextCost)
                     queue.push(nextNode, nextCost)
@@ -193,18 +193,18 @@ def aStarSearch(targetCoord):
 
         if goalTest(targetCoord, currCoord):
             output = ''
-            for x, y in currNode.path:
+            for x, y in currPath:
                 output += '{},{} '.format(x, y)
             return output[:-1]
 
         else:
             nextCoords = getPossibleMoves(currCoord)
             for nextCoord in nextCoords:
-                if (nextCoord not in currPath) and (nextCoord not in explored):
+                #if (nextCoord not in currPath) and (nextCoord not in explored):
+                if nextCoord not in explored:
                     if not goalTest(targetCoord, nextCoord):
                         explored.add(nextCoord)
-                    nextPath = currPath[:]
-                    nextPath.append(nextCoord)
+                    nextPath = currPath + [nextCoord]
                     nextCost = currNode.cost + getCostUCS(currCoord, nextCoord) + getValDiff(currCoord, nextCoord)
                     nextNode = Node(nextCoord, nextPath, nextCost)
                     nextHeuristicCost = heuristic(nextCoord, targetCoord)

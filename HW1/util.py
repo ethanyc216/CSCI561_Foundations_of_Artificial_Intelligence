@@ -36,10 +36,11 @@ class Queue:
         self.list = []
 
     def push(self,item):
-        self.list.insert(0,item)
+        #self.list.insert(0, item)
+        self.list.append(item)
 
     def pop(self):
-        return self.list.pop()
+        return self.list.pop(0)
 
     def isEmpty(self):
         return len(self.list) == 0
