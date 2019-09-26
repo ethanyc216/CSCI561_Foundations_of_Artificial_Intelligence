@@ -136,6 +136,42 @@ def breadthFirstSearch(targetCoord):
     return 'FAIL'
 
 
+def breadthFirstSearchList(targetCoordList):
+    targetRes = {}
+    targetsSet = set(targetCoordList)
+    explored = set()
+    queue = util.Queue()
+
+    startCoord = inputInfo['startCoord']
+    startNode = Node(startCoord, [startCoord], 0)
+    queue.push(startNode)
+
+    while not queue.isEmpty():
+        currNode = queue.pop()
+        currCoord = currNode.coord
+        currPath = currNode.path
+        explored.add(currCoord)
+
+        if currCoord in targetsSet:
+            output = ''
+            for x, y in currPath:
+                output += '{},{} '.format(x, y)
+            targetRes[currCoord] = output[:-1]
+            targetsSet.remove(currCoord)
+            if not targetsSet:
+                return targetRes
+
+        nextCoords = getPossibleMoves(currCoord) 
+        for nextCoord in nextCoords:
+            if nextCoord not in explored:
+                explored.add(nextCoord)
+                nextPath = currPath + [nextCoord]
+                nextCost = currNode.cost + 1
+                nextNode = Node(nextCoord, nextPath, nextCost)
+                queue.push(nextNode)
+    return targetRes
+
+
 def uniformCostSearch(targetCoord):
     explored = set()
     queue = util.PriorityQueue()
@@ -168,6 +204,43 @@ def uniformCostSearch(targetCoord):
                     nextNode = Node(nextCoord, nextPath, nextCost)
                     queue.push(nextNode, nextCost)
     return 'FAIL'
+
+
+def uniformCostSearchList(targetCoordList):
+    targetRes = {}
+    targetsSet = set(targetCoordList)
+    explored = set()
+    queue = util.PriorityQueue()
+
+    startCoord = inputInfo['startCoord']
+    startNode = Node(startCoord, [startCoord], 0)
+    queue.push(startNode, 0)
+
+    while not queue.isEmpty():
+        currNode = queue.pop()
+        currCoord = currNode.coord
+        currPath = currNode.path
+        explored.add(currCoord)
+
+        if currCoord in targetsSet:
+            output = ''
+            for x, y in currPath:
+                output += '{},{} '.format(x, y)
+            targetRes[currCoord] = output[:-1]
+            targetsSet.remove(currCoord)
+            if not targetsSet:
+                return targetRes
+
+        nextCoords = getPossibleMoves(currCoord)
+        for nextCoord in nextCoords:
+            if nextCoord not in explored:
+                if nextCoord not in targetsSet:
+                    explored.add(nextCoord)
+                nextPath = currPath + [nextCoord]
+                nextCost = currNode.cost + getCostUCS(currCoord, nextCoord)
+                nextNode = Node(nextCoord, nextPath, nextCost)
+                queue.push(nextNode, nextCost)
+    return targetRes
 
 
 def heuristic(currCoord, targetCoord):
@@ -212,6 +285,37 @@ def aStarSearch(targetCoord):
     return 'FAIL'
 
 
+def aStarSearchNew(targetCoord):
+    explored = set()
+    queue = util.PriorityQueue()
+
+    startCoord = inputInfo['startCoord']
+    startNode = Node(startCoord, [startCoord], 0)
+    queue.push(startNode, 0)
+
+    while not queue.isEmpty():
+        currNode = queue.pop()
+        currCoord = currNode.coord
+        currPath = currNode.path
+
+        if goalTest(targetCoord, currCoord):
+            output = ''
+            for x, y in currPath:
+                output += '{},{} '.format(x, y)
+            return output[:-1]
+
+        if currCoord not in explored:
+            explored.add(currCoord)
+            nextCoords = getPossibleMoves(currCoord)
+            for nextCoord in nextCoords:
+                nextPath = currPath + [nextCoord]
+                nextCost = currNode.cost + getCostUCS(currCoord, nextCoord) + getValDiff(currCoord, nextCoord)
+                nextNode = Node(nextCoord, nextPath, nextCost)
+                nextHeuristicCost = heuristic(nextCoord, targetCoord)
+                queue.push(nextNode, nextCost + nextHeuristicCost)
+    return 'FAIL'
+
+
 def compareAnswers(outputFile, answersFile):
     print 'The startCoord is: {},\nThe targets are {},\nThe maxDiff is {},\n The grid is:\n{}.\n'.format(inputInfo['startCoord'], inputInfo['targetsCoord'], inputInfo['maxDiff'], inputInfo['vals'])
     res = True
@@ -219,6 +323,8 @@ def compareAnswers(outputFile, answersFile):
         answers = f.read().splitlines()
     with open(outputFile) as f:
         outputs = f.read().splitlines()
+    if len(answers) != len(outputs):
+        res = False
     for answer, output in zip(answers, outputs):
         if not answer == output:
             print 'The answer vs output:\n{}\n{}'.format(answer, output)
@@ -243,6 +349,7 @@ if __name__ == "__main__":
     
     #start = time.time()
 
+    '''
     if inputInfo['alg'] == 'BFS':
         for targetCoord in inputInfo['targetsCoord']:
             path = breadthFirstSearch(targetCoord)
@@ -251,6 +358,11 @@ if __name__ == "__main__":
         for targetCoord in inputInfo['targetsCoord']:
             path = uniformCostSearch(targetCoord)
             res.append(path)
+    '''
+    if inputInfo['alg'] == 'BFS':
+        resDict = breadthFirstSearchList(inputInfo['targetsCoord'])
+    elif inputInfo['alg'] == 'UCS':
+        resDict = uniformCostSearchList(inputInfo['targetsCoord'])
     elif inputInfo['alg'] == 'A*':
         for targetCoord in inputInfo['targetsCoord']:
             path = aStarSearch(targetCoord)
@@ -259,12 +371,21 @@ if __name__ == "__main__":
         res.append('FAIL')
 
     with open(args.output, 'w') as f:
-        for i in range(inputInfo['numG']):
-            path = res[i]
-            if i == inputInfo['numG'] -1:
-                f.write(path)
-            else:
-                f.write(path+'\n')
+        if  inputInfo['alg'] == 'BFS' or inputInfo['alg'] == 'UCS':
+            for i in range(inputInfo['numG']):
+                target = inputInfo['targetsCoord'][i]
+                path = resDict.get(target, 'FAIL')
+                if i == inputInfo['numG'] -1:
+                    f.write(path)
+                else:
+                    f.write(path+'\n')
+        else:
+            for i in range(inputInfo['numG']):
+                path = res[i]
+                if i == inputInfo['numG'] -1:
+                    f.write(path)
+                else:
+                    f.write(path+'\n')
         f.close()
 
     #print time.time() - start
