@@ -317,7 +317,7 @@ def aStarSearchNew(targetCoord):
 
 
 def compareAnswers(outputFile, answersFile):
-    print 'The startCoord is: {},\nThe targets are {},\nThe maxDiff is {},\n The grid is:\n{}.\n'.format(inputInfo['startCoord'], inputInfo['targetsCoord'], inputInfo['maxDiff'], inputInfo['vals'])
+    #print 'The startCoord is: {},\nThe targets are {},\nThe maxDiff is {},\n The grid is:\n{}.\n'.format(inputInfo['startCoord'], inputInfo['targetsCoord'], inputInfo['maxDiff'], inputInfo['vals'])
     res = True
     with open(answersFile) as f:
         answers = f.read().splitlines()
@@ -327,9 +327,36 @@ def compareAnswers(outputFile, answersFile):
         res = False
     for answer, output in zip(answers, outputs):
         if not answer == output:
-            print 'The answer vs output:\n{}\n{}'.format(answer, output)
+            #print 'The answer vs output:\n{}\n{}'.format(answer, output)
+            answers = answer.split()
+            outputs = output.split()
+            if inputInfo['alg'] == 'BFS':
+                if len(answers) == len(outputs):
+                    continue
+                print 'The answer vs output for BFS:\n{}\n{}'.format(len(answers), len(outputs))
+
+            elif inputInfo['alg'] == 'UCS' or inputInfo['alg'] == 'A*':
+                answerVal = getPathValue(answers)
+                outputVal = getPathValue(outputs)
+                if answerVal == outputVal:
+                    continue
+                print 'The answer vs output for UCS or A*:\n{}\n{}'.format(answerVal, outputVal)
+            
             res = False
+
     print res
+
+
+def getPathValue(pathList):
+    pre = None
+    score = 0
+    for coord in pathList:
+        if not pre:
+            pre = tuple(map(int, coord.split(',')))
+        coord = tuple(map(int, coord.split(',')))
+        getCostUCS(pre, coord)
+        pre = coord
+    return score
 
 
 if __name__ == "__main__":
