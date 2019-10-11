@@ -6,6 +6,7 @@
 ##       Homework 1       ##
 ##       Yifan Chen       ##
 ##  ethanyc216@gmail.com  ##
+##     Sep. 26th 2019     ##
 ############################
 
 # input: input.txt
@@ -418,4 +419,4 @@ if __name__ == "__main__":
     #print time.time() - start
 
     # compare answers
-    #compareAnswers(args.output, args.answers)
+    compareAnswers(args.output, args.answers)
