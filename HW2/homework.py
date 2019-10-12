@@ -17,6 +17,8 @@ import argparse
 import util
 #import time
 
+colors = {'WHITE': ('W', 'B'), 'BLACK': ('B', 'W')}
+
 class Node(object):
     def __init__(self, coord, path, cost):
         self.coord = coord
@@ -25,34 +27,24 @@ class Node(object):
 
 
 def processInput(fileName): 
-    # algorithm 
-    # width, height 
-    # start coordinate, 0<=x<=w-1, 0<=y<=h-1
-    # max diff allowed 
-    # num of targets
-    # the list of targets' coordinate, 0<=x<=w-1, 0<=y<=h-1
-    # the array of the grid
+    # play mode 
+    # team
+    # remainingTime
+    # the board 16 * 16
     with open(fileName) as f: 
         lines = f.read().splitlines() 
     inputInfo = {} 
 
-    inputInfo['alg'] = lines[0] 
+    inputInfo['mode'] = lines[0] 
+    inputInfo['color'] = lines[1]
+    inputInfo['remainingTime'] = float(lines[2])
 
-    gridWidth, gridHeight = [int(i) for i in lines[1].split()] 
-    inputInfo['grid'] = (gridWidth, gridHeight) 
-
-    sX, sY = [int(i) for i in lines[2].split()] 
-    inputInfo['startCoord'] = (sX, sY)
-
-    inputInfo['maxDiff'] = int(lines[3])
-
-    numG = int(lines[4])
-    inputInfo['numG'] = numG
-
-    inputInfo['targetsCoord'] = []
-    for line in lines[5:5+numG]:
-        x, y = [int(i) for i in line.split()] 
-        inputInfo['targetsCoord'].append((x, y))
+    inputInfo['mine'] = set()
+    inputInfo['theirs'] = set()
+    for y, line in enumerate(lines[3:19]):
+        for x, state in enumerate(line):
+             
+        inputInfo['board'].append((x, y))
 
     #vals = []
     #for line in lines[5+numG:]:

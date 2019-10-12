@@ -10,7 +10,7 @@ do
 
 	python homework.py
 	
-	RES=$(./python.py --input input.txt --output output.txt --answers testcases/output$i.txt)
+	RES=$(./test.py --input input.txt --output output.txt --answers testcases/output$i.txt)
 	if [[ $RES == "True" ]]; then
 		counter=$(($counter+1))
 	else
@@ -18,6 +18,6 @@ do
 	fi
 
 done
-echo $counter
+echo "You are right: $counter"
 echo "All done!!"
 rm -rf input.txt output.txt

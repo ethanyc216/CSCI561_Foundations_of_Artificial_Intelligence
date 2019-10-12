@@ -12,27 +12,27 @@
 # input: input.txt
 # output: output.txt
 
-import argparse 
+import argparse
 #import time
 
-def processInput(fileName): 
-    # algorithm 
-    # width, height 
+def processInput(fileName):
+    # algorithm
+    # width, height
     # start coordinate, 0<=x<=w-1, 0<=y<=h-1
-    # max diff allowed 
+    # max diff allowed
     # num of targets
     # the list of targets' coordinate, 0<=x<=w-1, 0<=y<=h-1
     # the array of the grid
-    with open(fileName) as f: 
-        lines = f.read().splitlines() 
-    inputInfo = {} 
+    with open(fileName) as f:
+        lines = f.read().splitlines()
+    inputInfo = {}
 
-    inputInfo['alg'] = lines[0] 
+    inputInfo['alg'] = lines[0]
 
-    gridWidth, gridHeight = [int(i) for i in lines[1].split()] 
-    inputInfo['grid'] = (gridWidth, gridHeight) 
+    gridWidth, gridHeight = [int(i) for i in lines[1].split()]
+    inputInfo['grid'] = (gridWidth, gridHeight)
 
-    sX, sY = [int(i) for i in lines[2].split()] 
+    sX, sY = [int(i) for i in lines[2].split()]
     inputInfo['startCoord'] = (sX, sY)
 
     inputInfo['maxDiff'] = int(lines[3])
@@ -42,7 +42,7 @@ def processInput(fileName):
 
     inputInfo['targetsCoord'] = []
     for line in lines[5:5+numG]:
-        x, y = [int(i) for i in line.split()] 
+        x, y = [int(i) for i in line.split()]
         inputInfo['targetsCoord'].append((x, y))
 
     #vals = []
@@ -73,19 +73,30 @@ def compareAnswers(outputFile, answersFile):
             if inputInfo['alg'] == 'BFS':
                 if len(answers) == len(outputs):
                     continue
-                print 'The answer vs output for BFS:\n{}\n{}'.format(len(answers), len(outputs))
+                print 'The answer vs output for BFS:\n{}, {}'.format(len(answers), len(outputs))
 
             elif inputInfo['alg'] == 'UCS' or inputInfo['alg'] == 'A*':
                 answerVal = getPathValue(answers)
                 outputVal = getPathValue(outputs)
                 if answerVal == outputVal:
                     continue
-                print 'The answer vs output for UCS or A*:\n{}\n{}'.format(answerVal, outputVal)
-            
+                print 'The answer vs output for UCS or A*:\n{}, {}'.format(answerVal, outputVal)
+
             res = False
 
-    print res
+    print (res)
 
+def getCostUCS(x1, y1, nextCoord):
+    if (x1-1, y1-1) == nextCoord:
+        return 14
+    elif (x1-1, y1+1) == nextCoord:
+        return 14
+    elif (x1+1, y1-1) == nextCoord:
+        return 14
+    elif (x1+1, y1+1) == nextCoord:
+        return 14
+    else:
+        return 10
 
 def getPathValue(pathList):
     pre = None
@@ -94,7 +105,7 @@ def getPathValue(pathList):
         if not pre:
             pre = tuple(map(int, coord.split(',')))
         coord = tuple(map(int, coord.split(',')))
-        getCostUCS(pre, coord)
+        getCostUCS(pre[0], pre[1], coord)
         pre = coord
     return score
 
@@ -113,7 +124,7 @@ if __name__ == "__main__":
 
     inputInfo = processInput(args.input)
     res = []
-    
+
     #start = time.time()
 
     #print time.time() - start
