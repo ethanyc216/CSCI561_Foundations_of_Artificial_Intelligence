@@ -12,14 +12,13 @@
 # input: input.txt
 # output: output.txt
 
-import argparse 
-import copy
+import argparse
 import halma
 import player
-#import time
+
+import time
 
 colors = {'WHITE': 'W', 'BLACK': 'B'}
-#depths = [0, 1, 2, 3]
 
 def processInput(fileName): 
     # play mode 
@@ -86,34 +85,24 @@ if __name__ == "__main__":
     halmaGame = halma.HalmaGame(inputInfo['whiteSet'], inputInfo['blackSet'])
     halmaGame.updateCamp()
     
-    '''
-    if inputInfo['mode'] == 'SINGLE':
-        for depth in depths:
-            myAgent = player.AlphaBetaAgent(color, depth)
-            moves = myAgent.getAction(halmaGame)
-            outputString = getoutput(moves)
-            with open(args.output, 'w') as f:
-                f.write(outputString)
-                f.close()
-    
-    else:
-    '''
+    #if inputInfo['mode'] == 'SINGLE':
+    #    allMoves = halmaGame.getPossibleMoves(color)
+    #    moves = halmaGame.getRecommendedMovesSingle(color, allMoves)
+
+    #else:
     if len(halmaGame.camp[color]) > 1:
-        depths = [1]
+        depth = 0
     else:
-        depths = [2]
-
-    if remainingTime < 3:
-        depths = [0, 1]
+        depth = 2
         
-    for depth in depths:
-        #startTime = time.time()
-        myAgent = player.AlphaBetaAgent(color, depth)
-        moves = myAgent.getAction(halmaGame)
-        #print depth, time.time() - startTime
+    startTime = time.time()
+    myAgent = player.AlphaBetaAgent(color, depth)
+    moves = myAgent.getAction(halmaGame)
+    print time.time() - startTime
 
-        outputString = getoutput(moves)
-        #print outputString
-        with open(args.output, 'w') as f:
-            f.write(outputString)
-            f.close()
+    outputString = getoutput(moves)
+    print outputString
+    exit()
+    with open(args.output, 'w') as f:
+        f.write(outputString)
+        f.close()
