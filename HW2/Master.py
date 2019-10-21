@@ -230,12 +230,10 @@ def run_full_game(input_file, output_file, total_time, agent1, agent2, manual = 
 if __name__ == "__main__":
     input_file = 'input.txt'  # to be given to the agents
     output_file = 'output.txt'  # output from the agents
-    agent1 = ['python3', 'homework3.py']
-    agent2 = ['java','./gjm/homework']
-    agent3 = ['python', './bc/homework.py']
-    agent4 = ['python3','./ethan/homework.py']
+    agent1 = ['python3','homework.py']
+    agent1 = ['python3','homework.py']
 
-    run_full_game(input_file, output_file, 300, agent1, agent3, manual=False)
+    run_full_game(input_file, output_file, 300, agent1, agent1, manual=False)
     # run_single_move(input_file, output_file, 5, agent1)
 
     # board = HalmaBoard()
