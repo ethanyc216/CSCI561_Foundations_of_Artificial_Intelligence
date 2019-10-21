@@ -60,8 +60,11 @@ class HalmaGame(object):
             if (x, y) in closedSet:
                 continue
             closedSet.add((x, y))
-            if ((x-goals[opponents[color]])**2 + (y-goals[opponents[color]])**2) > ((pawnX-goals[opponents[color]])**2 + (pawnY-goals[opponents[color]])**2):
-            #if (color == 'B' and ((x**2 + y**2) > (pawnX**2 + pawnY**2))) or (color == 'W' and (((x-15)**2 + (y-15)**2) > ((pawnX-15)**2 + (pawnY-15)**2))):
+            if (x, y) not in camps[color]:
+                validMoves[(x, y)] = path + [(x, y)]
+            elif (x-pawnX) >= 0 and (y-pawnY) >= 0 and color == 'B' and len(path) > 1:
+                validMoves[(x, y)] = path + [(x, y)]
+            elif (x-pawnX) <= 0 and (y-pawnY) <= 0 and color == 'W' and len(path) > 1:
                 validMoves[(x, y)] = path + [(x, y)]
 
             possibleJumps = self.getPossibleJumpsPawn((x, y), path)
@@ -78,8 +81,11 @@ class HalmaGame(object):
                     continue
                 elif (x, y) in self.board['total']:
                     continue
-                elif ((x-goals[opponents[color]])**2 + (y-goals[opponents[color]])**2) > ((pawnX-goals[opponents[color]])**2 + (pawnY-goals[opponents[color]])**2):
-                #elif (color == 'B' and ((x**2 + y**2) > (pawnX**2 + pawnY**2))) or (color == 'W' and (((x-15)**2 + (y-15)**2) > ((pawnX-15)**2 + (pawnY-15)**2))):
+                if (x, y) not in camps[color]:
+                    validMoves[(x, y)] = ['E', (pawnX, pawnY), (x, y)]
+                elif (x-pawnX) >= 0 and (y-pawnY) >= 0 and color == 'B':
+                    validMoves[(x, y)] = ['E', (pawnX, pawnY), (x, y)]
+                elif (x-pawnX) <= 0 and (y-pawnY) <= 0 and color == 'W':
                     validMoves[(x, y)] = ['E', (pawnX, pawnY), (x, y)]
 
         return validMoves
@@ -153,6 +159,13 @@ class HalmaGame(object):
                 moves = self.getPossibleMovesPawn(color, (pawnX, pawnY))
                 if moves:
                     validMoves[(pawnX, pawnY)] = moves
+
+            if not validMoves:
+                for pawnX, pawnY in (self.board[color] - self.camp[color]):
+                    moves = self.getPossibleMovesPawnFree(color, (pawnX, pawnY))
+                    if moves:
+                        validMoves[(pawnX, pawnY)] = moves
+                        
         else:
             for pawnX, pawnY in self.board[color]:
                 moves = self.getPossibleMovesPawnFree(color, (pawnX, pawnY))
