@@ -1,6 +1,6 @@
-SINGLE
-WHITE
-100.0
+GAME
+BLACK
+300
 BBBBB...........
 BBBBB...........
 BBBB............

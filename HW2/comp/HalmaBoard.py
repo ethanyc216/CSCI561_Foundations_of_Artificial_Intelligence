@@ -162,7 +162,7 @@ class HalmaBoard:
     #     return res
 
     # code for agent's use ####################################################################################
-    def look_around(self, pos: tuple):
+    def look_around(self, pos):
         row, col = pos
         candidates = [(-1, -1), (-1, 0), (-1, 1),
                      (0, -1), (0, 1),

@@ -1,12 +1,14 @@
-import tkinter as tk
+#!/usr/bin/env python 
+
+#import tkinter as tk
 import argparse
-from HalmaGUI import HalmaGUI
+#from HalmaGUI import HalmaGUI
 from HalmaBoard import HalmaBoard
 from subprocess import call
 from timeit import timeit
 
 import time
-import homework3
+import homework
 
 
 # def read_input(fn):
@@ -25,7 +27,7 @@ import homework3
 #                 board.append(line.strip().split())
 record = []
 
-def initialize_board(board: HalmaBoard):
+def initialize_board(board):
     board.black_pieces = {(0, 0), (0, 1), (0, 2), (0, 3), (0, 4),           # black chess pieces
                          (1, 0), (1, 1), (1, 2), (1, 3), (1, 4),
                          (2, 0), (2, 1), (2, 2), (2, 3),
@@ -230,8 +232,8 @@ def run_full_game(input_file, output_file, total_time, agent1, agent2, manual = 
 if __name__ == "__main__":
     input_file = 'input.txt'  # to be given to the agents
     output_file = 'output.txt'  # output from the agents
-    agent1 = ['python3','homework.py']
-    agent1 = ['python3','homework.py']
+    agent1 = ['python','homework.py']
+    agent1 = ['python','homework.py']
 
     run_full_game(input_file, output_file, 300, agent1, agent1, manual=False)
     # run_single_move(input_file, output_file, 5, agent1)
