@@ -50,7 +50,6 @@ class AlphaBetaAgent(object):
         #actions.sort(key=lambda x: (x[0][0]-goals[player])**2 + (x[0][1]-goals[player])**2)
         actions.sort(key=lambda x: (x[1][0]-goals[player])**2 + (x[1][1]-goals[player])**2)
         opengoalsActions.sort(key=lambda x: (x[1][0]-goals[player])**2 + (x[1][1]-goals[player])**2)
-
         return actions + opengoalsActions
 
 
@@ -65,8 +64,10 @@ class AlphaBetaAgent(object):
         # Choose one of the best actions
         allMoves = gameState.getPossibleMoves(self.player)
         for action in self.decodeCoord(allMoves, self.player):
-            successorState = gameState.makeMove(self.player, action[0], action[1], action[2], self.player)
+            successorState = gameState.makeMove(self.player, action[0], action[1], action[2])
             minScore = self.minimizer(successorState, 0, opponents[self.player], alpha, beta)
+            if minScore == (19 * 2 + 1):
+                return allMoves[action[0]][action[1]]
             if minScore > score:
                 score = minScore
                 move = action
@@ -81,13 +82,12 @@ class AlphaBetaAgent(object):
 
     def maximizer(self, gameState, currentDepth, alpha, beta):
         if self.depth == currentDepth or gameState.isLose(self.player) or gameState.isWin(self.player):
-            #return gameState.getScores(self.player) - gameState.getScores(opponents[self.player])
-            return gameState.getScores(self.player) 
+            return gameState.getScores(self.player)
         maxScore = float('-inf')
         allMoves = gameState.getPossibleMoves(self.player)
         d1 = copy.deepcopy(gameState.board['total'])
         for action in self.decodeCoord(allMoves, self.player):
-            successorState = gameState.makeMove(self.player, action[0], action[1], action[2], self.player)
+            successorState = gameState.makeMove(self.player, action[0], action[1], action[2])
             maxScore = max(maxScore, self.minimizer(successorState, currentDepth + 1, opponents[self.player], alpha, beta))
             if maxScore > beta:
                 return maxScore
@@ -97,12 +97,11 @@ class AlphaBetaAgent(object):
 
     def minimizer(self, gameState, currentDepth, player, alpha, beta):
         if self.depth == currentDepth or gameState.isLose(self.player) or gameState.isWin(self.player):
-            #return gameState.getScores(self.player) - gameState.getScores(opponents[self.player])
-            return gameState.getScores(self.player) 
+            return gameState.getScores(self.player)
         minScore = float('inf')
         allMoves = gameState.getPossibleMoves(player)
         for action in self.decodeCoord(allMoves, player):
-            successorState = gameState.makeMove(player, action[0], action[1], action[2], self.player)
+            successorState = gameState.makeMove(player, action[0], action[1], action[2])
             minScore = min(minScore, self.maximizer(successorState, currentDepth + 1, alpha, beta)) 
             if minScore < alpha:
                 return minScore

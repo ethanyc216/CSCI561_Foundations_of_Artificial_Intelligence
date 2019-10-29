@@ -233,9 +233,13 @@ if __name__ == "__main__":
     input_file = 'input.txt'  # to be given to the agents
     output_file = 'output.txt'  # output from the agents
     agent1 = ['python','homework.py']
-    agent1 = ['python','homework.py']
+    agent2 = ['python3','yucheng/homework3.py']
+    #agent2 = ['python','old/homework.py']
 
-    run_full_game(input_file, output_file, 300, agent1, agent1, manual=False)
+    #black
+    run_full_game(input_file, output_file, 300, agent1, agent2, manual=False)
+    #white
+    #run_full_game(input_file, output_file, 300, agent2, agent1, manual=False)
     # run_single_move(input_file, output_file, 5, agent1)
 
     # board = HalmaBoard()

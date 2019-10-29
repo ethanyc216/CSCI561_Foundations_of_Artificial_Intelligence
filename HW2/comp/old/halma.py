@@ -175,13 +175,12 @@ class HalmaGame(object):
         return validMoves
 
 
-    def makeMove(self, color, ori, des, jump, player):
+    def makeMove(self, color, ori, des, jump):
         state = copy.deepcopy(self)
         state.board[color].remove(ori)
         state.board[color].add(des)
         state.board['total'] = state.board['W'] | state.board['B']
-        if color == player:
-            state.jump = jump == 'J'
+        state.jump = jump == 'J'
 
         return state
 
@@ -202,7 +201,7 @@ class HalmaGame(object):
                 return recommendedMoves
 
 
-    def getScoresDummy(self, color):
+    def getScores(self, color):
         goalPawns = self.board[color] & camps[opponents[color]]
         score = len(goalPawns)
         if score > 0:
@@ -210,7 +209,7 @@ class HalmaGame(object):
             score = len(goalPawns)
 
         if score == 19:
-            return 6000
+            return 19 * 2 + 1
         
         openPawns = self.board[color] - camps[opponents[color]]
         openGoals = camps[opponents[color]] - self.board['total'] 
@@ -223,12 +222,12 @@ class HalmaGame(object):
                     if dist < shortest[2]:
                         shortest = (pawn, goal, dist)
 
-            score += (1.0 / sqrt(shortest[2]))
+            score += (1/ sqrt(shortest[2]))
             openPawns.remove(shortest[0])
             openGoals.remove(shortest[1])
 
-        #if self.jump:
-        #    return score + 5
+        if self.jump:
+            return score + 5
 
         return score
 
@@ -255,50 +254,39 @@ class HalmaGame(object):
 
         return False 
 
-
-    def getScores(self, color):
-        opponentsColor = opponents[color]
-        opponentsGoal = goals[opponentsColor]
-
-        goalPawns = self.board[color] & camps[opponentsColor]
+    def getScoresDummy(self, color):
+        goalPawns = self.board[color] & camps[opponents[color]]
         score = len(goalPawns)
         if score > 0:
-            #if score > 15:
-            #    return self.getScoresDummy(color)
-            goalPawns = self.board['total'] & camps[opponentsColor]
+            goalPawns = self.board['total'] & camps[opponents[color]]
             score = len(goalPawns)
 
         if score == 19:
-            return 60000
+            return 19 * 2 + 1
+        
+        openPawns = self.board[color] - camps[opponents[color]]
+        openGoals = camps[opponents[color]] - self.board[color] 
+        
+        while openGoals:
+            shortest = (None, None, float('inf'))
+            for goal in openGoals:
+                for pawn in openPawns:
+                    dist = (pawn[0] - goal[0])**2 + (pawn[1] - goal[1])**2
+                    if dist < shortest[2]:
+                        shortest = (pawn, goal, dist)
 
-        score = 0
-        goal = goals[color]
-        if color == 'W':
-            for i in self.board[color]:
-                score += (16-i[0])*(16-i[1])
-                if i in camps[opponentsColor]:
-                    score += 1
-                #if self.canJump(i, color):
-                #    score -= 1
-            
-            opponenstGoalPawns = self.board[opponentsColor] & camps[color]
-            if len(opponenstGoalPawns) <= 13:
-                for i in self.board[opponentsColor]:
-                    score -= (i[0]+1)*(i[1]+1)
-        else:
-            for i in self.board[color]:
-                score += (i[0]+1)*(i[1]+1)
-                if i in camps[opponentsColor]:
-                    score += 1
-                #if self.canJump(i, color):
-                #    score -= 1
-            
-            opponenstGoalPawns = self.board[opponentsColor] & camps[color]
-            if len(opponenstGoalPawns) <= 13:
-                for i in self.board[opponentsColor]:
-                    score -= (16-i[0])*(16-i[1])
+            score += (1/ sqrt(shortest[2]))
+            if color == 'W' and pawn[0] + pawn[1] > 15:
+                score -= 0.5 / (pawn[0] + pawn[1])
+            elif color == 'B' and pawn[0] + pawn[1] < 15:
+                score -= 0.5 / (30 - pawn[0] + pawn[1])
+            #if self.canJump(pawn, color):
+            #    score -= 0.7
+            openPawns.remove(shortest[0])
+            openGoals.remove(shortest[1])
 
         if self.jump:
-            return score + 5
+            return score + 10
 
         return score
+
