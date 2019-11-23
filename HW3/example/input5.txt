@@ -1,0 +1,5 @@
+1
+Silly(Alice)
+2
+Take(x,Warfarin) => Silly(x)
+Silly(x) => Take(Alice,x)

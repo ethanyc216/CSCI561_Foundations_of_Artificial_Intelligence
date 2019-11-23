@@ -1,0 +1,6 @@
+1
+~A(Deep)
+3
+A(x) & ~B(y) => C(z)
+~B(Dark)
+~C(y)

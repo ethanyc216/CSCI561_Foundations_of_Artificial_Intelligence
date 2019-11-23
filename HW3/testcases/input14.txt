@@ -1,0 +1,15 @@
+2
+Ancestor(Liz,Billy)
+Ancestor(Liz,Joe)
+11
+Parent(x,y) => Ancestor(x,y)
+Parent(x,y) & Ancestor(y,z) => Ancestor(x,z)
+Parent(Liz,A)
+Parent(A,B)
+Parent(B,C)
+Parent(C,D)
+Parent(D,E)
+Parent(E,F)
+Parent(F,G)
+Parent(G,Billy)
+Parent(K,Joe)

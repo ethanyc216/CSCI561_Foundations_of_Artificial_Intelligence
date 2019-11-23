@@ -1,0 +1,5 @@
+1
+Take(Alice,Warfarin)
+2
+Take(x,Warfarin)
+Take(Alice,x)
