@@ -86,4 +86,4 @@ if __name__ == "__main__":
         f.close()
     
     # compare answers
-    #compareAnswers(args.output, args.answers)
+    compareAnswers(args.output, args.answers)
