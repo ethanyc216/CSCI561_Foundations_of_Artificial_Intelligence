@@ -1,2 +1,2 @@
 # CSCI561_Foundations_of_Artificial_Intelligence
-Fall 2019
+USC CSCI561 Foundations of Artificial Intelligence, taught by Dr. Laurent Itti, Fall 2019
